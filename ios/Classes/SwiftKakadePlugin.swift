@@ -16,8 +16,6 @@ public class SwiftKakadePlugin: NSObject, FlutterPlugin {
       result("iOS " + UIDevice.current.systemVersion)
     case "getSDKVersion":
        getSDKVersion(result: result)
-    case "init":
-
     default:
       result(FlutterMethodNotImplemented)
     }
