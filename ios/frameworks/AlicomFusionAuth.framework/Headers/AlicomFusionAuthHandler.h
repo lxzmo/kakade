@@ -112,6 +112,11 @@ static NSString * const AlicomFusionTemplateId_100005 = @"100005";
  */
 - (NSString *)getCurrentTemplateId;
 
+/**
+ *  主动关闭一键登录二次授权页弹窗
+ */
+- (void)closeNumberAuthPrivactAlertView;
+
 @end
 
 NS_ASSUME_NONNULL_END

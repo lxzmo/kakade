@@ -152,10 +152,12 @@ static NSString * const AlicomFusionDeviceSecurityDetectionRisk = @"700003";
 static NSString * const AlicomFusionDeviceSecurityDetectionGetFail = @"700004";
 
 #pragma mark - 网络相关
-//无网络，暂时不支持
+//网络连接失败
 static NSString * const AlicomFusionErrorNoNetwork = @"800001";
 //SDK内部网络请求超时，暂时不支持
 static NSString * const AlicomFusionErrorNetworkTimeout = @"800002";
+//网络连接成功
+static NSString * const AlicomFusionNetworkConnected = @"800003";
 
 #pragma mark - 其他
 //SDK内部接口超时

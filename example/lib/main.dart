@@ -20,10 +20,52 @@ class _MyAppState extends State<MyApp> {
   final List<String> _logs = <String>[];
   String _aliAuthVersion = '获取阿里云插件版本中';
 
+  final AuthConfig _authConfig = AuthConfig(
+      tokenStr: '',
+      iosSchemeCode: '',
+      androidSchemeCode: '',
+      enableLog: true,
+      authUIConfig: const AuthUIConfig(sloganText: '本机号码1'));
+
   @override
   void initState() {
     super.initState();
     initPlatformState();
+    initSDK();
+  }
+
+  void initSDK() {
+    // 创建实例
+    Kakade.initSdk(authConfig: _authConfig);
+    Kakade.sdkCallback(
+        onSdkCallbackEvent: _onSdkCallbackEvent,
+        updateToken: fetchNewTokenFromServer);
+  }
+
+  // 获取新Token
+  Future<String> fetchNewTokenFromServer() async {
+    await Future.delayed(const Duration(seconds: 2));
+    final String newToken = '${_authConfig.tokenStr}new';
+    return newToken;
+  }
+
+  // SDK回调
+  Future<dynamic> _onSdkCallbackEvent(AuthResponseModel responseModel) async {
+    debugPrint('responseModel:$responseModel');
+    final AuthResultCode resultCode = AuthResultCode.fromCode(
+      responseModel.resultCode!,
+    );
+    _addLog('[${resultCode.code}] ${resultCode.message}');
+    switch (resultCode) {
+      case AuthResultCode.alicomFusionNumberAuthInnerCodeSuccess:
+        break;
+      case AuthResultCode.alicomFusionTokenInvalid:
+        break;
+      case AuthResultCode.alicomFusionTokenValid:
+        break;
+      default:
+        break;
+    }
   }
 
   Future<void> initPlatformState() async {
@@ -73,28 +115,46 @@ class _MyAppState extends State<MyApp> {
           child: Flex(direction: Axis.vertical, children: [
             _divider('初始化操作'),
             ElevatedButton(
-              onPressed: () async {},
+              onPressed: () {
+                initSDK();
+              },
               child: const Text("初始化SDK"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Kakade.updatePhoneNumber(number: '18610992356');
+              },
+              child: const Text("更新手机号"),
             ),
             _divider('授权页面操作'),
             ElevatedButton(
-              onPressed: () async {},
+              onPressed: () async {
+                Kakade.loginRegister();
+              },
               child: const Text("登录注册场景"),
             ),
             ElevatedButton(
-              onPressed: () async {},
+              onPressed: () async {
+                Kakade.changeMobile();
+              },
               child: const Text("更换手机号场景"),
             ),
             ElevatedButton(
-              onPressed: () async {},
+              onPressed: () async {
+                Kakade.resetPassword();
+              },
               child: const Text("重置密码场景"),
             ),
             ElevatedButton(
-              onPressed: () async {},
+              onPressed: () async {
+                Kakade.bindNewMobile();
+              },
               child: const Text("绑定新手机号场景"),
             ),
             ElevatedButton(
-              onPressed: () async {},
+              onPressed: () async {
+                Kakade.verifyBindMobile();
+              },
               child: const Text("验证绑定手机号场景"),
             ),
             _divider("操作日志"),

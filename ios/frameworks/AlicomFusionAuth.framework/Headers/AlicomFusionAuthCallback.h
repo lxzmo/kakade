@@ -176,7 +176,7 @@ static NSString * const AlicomFusionNodeNameUpGoingAuth = @"AlicomFusionNodeName
  */
 - (void)onPhoneNumberVerifyUICustomDefined:(AlicomFusionAuthHandler *)handler
                                 templateId:(NSString *)templateId
-                                     nodeId:(NSString *)nodeId
+                                    nodeId:(NSString *)nodeId
                                    UIModel:(AlicomFusionNumberAuthModel *)model;
 
 /**

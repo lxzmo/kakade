@@ -1,13 +1,7 @@
-import 'package:flutter/services.dart';
+library kakade;
 
-class Kakade {
-  static const MethodChannel _methodChannel = MethodChannel('kakade');
-
-  static Future<String?> getPlatformVersion() {
-    return _methodChannel.invokeMethod('getPlatformVersion');
-  }
-
-  static Future<String?> getSDKVersion() {
-    return _methodChannel.invokeMethod('getSDKVersion');
-  }
-}
+export 'model/auth_response_model.dart';
+export 'model/auth_result_code.dart';
+export 'config/auth_config.dart';
+export 'config/auth_ui_config.dart';
+export 'kakade_main.dart';

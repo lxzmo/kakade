@@ -9,9 +9,9 @@ Pod::Spec.new do |s|
   s.description      = <<-DESC
 A new Flutter plugin project.
                        DESC
-  s.homepage         = 'http://example.com'
+  s.homepage         = 'https://github.com/lxzmo/kakade'
   s.license          = { :file => '../LICENSE' }
-  s.author           = { 'Your Company' => 'email@example.com' }
+  s.author           = { 'ellen' => '18610992356@163.com' }
   s.source           = { :path => '.' }
   
   s.source_files = 'Classes/**/*'
@@ -26,6 +26,7 @@ A new Flutter plugin project.
 
   s.vendored_frameworks = 'frameworks/*.framework'
   s.framework = 'Network'
+  s.resource = 'frameworks/AlicomFusionAuth.framework/AlicomFusionAuth.bundle'
 
   s.xcconfig = {
     'OTHER_LDFLAGS' => '-ObjC',
