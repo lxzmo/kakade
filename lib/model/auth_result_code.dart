@@ -1,8 +1,6 @@
 ///阿里云SDK返回回调Enum
 ///具体错误在碰到之后查阅 https://help.aliyun.com/document_detail/2252093.html?spm=a2c4g.2252101.0.0.df2e7b8cK0m5uG
 enum AuthResultCode {
-  simulatorArchitectureNotSupported('100000', '不支持模拟器架构'),
-
   /// 场景相关
   // 场景不存在
   alicomFusionTemplateNotExist('100001', '场景不存在'),

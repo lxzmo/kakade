@@ -70,15 +70,19 @@ public class SwiftKakadePlugin: NSObject, FlutterPlugin{
                 #else
                 initSdk(arguments: call.arguments, result: result)
                 #endif
+            case "getSDKVersion":
+                // 获取SDK版本
+                #if targetEnvironment(simulator)
+                result(FlutterError(code: "100000", message: "不支持模拟器架构", details: nil))
+                #else
+                getSDKVersion(result: result)
+                #endif
             #if targetEnvironment(simulator)
             // 模拟器逻辑，如果需要的话
             #else
             case "getPlatformVersion":
                 // 获取平台版本
                 result("iOS " + UIDevice.current.systemVersion)
-            case "getSDKVersion":
-                // 获取SDK版本
-                getSDKVersion(result: result)
             case "updatePhoneNumber":
                 // 更新手机号
                 updatePhoneNumber(arguments: call.arguments, result: result)
