@@ -14,30 +14,34 @@ import io.flutter.plugin.common.MethodChannel.Result;
 public class KakadePlugin implements FlutterPlugin, MethodCallHandler {
 
     private static final String TAG = "KakadePlugin";
+
+     private AuthClient authClient;
     
     /// The MethodChannel that will the communication between Flutter and native Android
     ///
     /// This local reference serves to register the plugin with the Flutter Engine and unregister it
     /// when the Flutter Engine is detached from the Activity
-    private MethodChannel methodChannel;
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
-        methodChannel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "kakade");
+        MethodChannel methodChannel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "kakade");
+        authClient = AuthClient.getInstance();
+        authClient.setChannel(methodChannel);
         methodChannel.setMethodCallHandler(this);
+        authClient.setFlutterPluginBinding(flutterPluginBinding);
     }
 
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
          switch (call.method) {
-            case "initSdk":
-                initSdk(call.arguments, result);
-                break;
             case "getPlatformVersion":
                 result.success("Android " + android.os.Build.VERSION.RELEASE);
                 break;
             case "getSDKVersion":
                 getSDKVersion(result);
+                break;
+             case "initSdk":
+                authClient.initSdk(call.arguments, result);
                 break;
             default:
                 result.notImplemented();
@@ -49,12 +53,9 @@ public class KakadePlugin implements FlutterPlugin, MethodCallHandler {
         result.success("阿里云一键登录版本:" + version);
     }
 
-    private void initSdk(Object arguments, @NonNull MethodChannel.Result result) {
-
-    }
-
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
-        methodChannel.setMethodCallHandler(null);
+        authClient.setFlutterPluginBinding(null);
+        authClient.getChannel().setMethodCallHandler(null);
     }
 }

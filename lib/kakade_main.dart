@@ -59,6 +59,11 @@ class Kakade {
     _methodChannel.invokeMethod('loginRegister');
   }
 
+  // 结束登录注册
+  static void stopLoginRegisterScene() {
+    _methodChannel.invokeMethod('stopLoginRegisterScene');
+  }
+
   // 更换手机号场景
   static void changeMobile() {
     _methodChannel.invokeMethod('changeMobile');

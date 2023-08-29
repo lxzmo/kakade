@@ -8,7 +8,7 @@ class AuthResponseModel {
   String? carrierFailedResultData;
   String? innerRequestId;
   String? requestId;
-  Map<String, dynamic>? extendData;
+  String? maskToken;
 
   AuthResponseModel(
       {this.templateId,
@@ -20,7 +20,7 @@ class AuthResponseModel {
       this.carrierFailedResultData,
       this.innerRequestId,
       this.requestId,
-      this.extendData});
+      this.maskToken});
 
   AuthResponseModel.fromJson(Map<String, dynamic> json) {
     templateId = json['templateId'];
@@ -32,7 +32,7 @@ class AuthResponseModel {
     carrierFailedResultData = json['carrierFailedResultData'];
     innerRequestId = json['innerRequestId'];
     requestId = json['requestId'];
-    extendData = json['extendData'];
+    maskToken = json['maskToken'];
   }
 
   Map<String, dynamic> toJson() {
@@ -46,7 +46,7 @@ class AuthResponseModel {
     data['carrierFailedResultData'] = carrierFailedResultData;
     data['innerRequestId'] = innerRequestId;
     data['requestId'] = requestId;
-    data['extendData'] = extendData;
+    data['maskToken'] = maskToken;
     return data;
   }
 }

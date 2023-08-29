@@ -35,6 +35,33 @@ enum AuthResultCode {
   // token鉴权失败
   alicomFusionTokenVerifyFail('300006', 'token鉴权失败'),
 
+  /// 一键登录相关
+  // 一键登录初始化成功
+  alicomFusionNumberAuthInitSuccess('400001', '一键登录初始化成功'),
+  // 一键登录初始化失败
+  alicomFusionNumberAuthInitFail('400002', '一键登录初始化失败'),
+  // 一键登录弹起授权页成功
+  alicomFusionNumberAuthPresentSuccess('400003', '一键登录弹起授权页成功'),
+  // 一键登录弹起授权页失败
+  alicomFusionNumberAuthPresentFail('400004', '一键登录弹起授权页失败'),
+  // 一键登录弹起授权页取消
+  alicomFusionNumberAuthDisMiss('400005', '一键登录弹起授权页取消'),
+  // 一键登录获取token成功
+  alicomFusionNumberAuthGetTokenSuccess('400006', '一键登录获取token成功'),
+  // 一键登录获取token失败
+  alicomFusionNumberAuthGetTokenFail('400007', '一键登录获取token失败'),
+  // 一键登录获取页面各种点击事件
+  alicomFusionNumberAuthGetTokenEvent('410008', '一键登录获取页面各种点击事件'),
+  // 一键登录获取页面其他手机号登录按钮点击事件
+  alicomFusionNumberAuthOtherPhoneLoginClickEvent(
+      '410009', '一键登录获取页面其他手机号登录按钮点击事件'),
+  // 一键登录点击返回按钮
+  alicomFusionNumberAuthBackBtnClickEvent('410010', '一键登录点击返回按钮'),
+  // 一键登录授权页点击协议
+  alicomFusionNumberAuthProtocolClickEvent('410011', '一键登录授权页点击协议'),
+  // 一键登录录授权页二次弹窗点击协议
+  alicomFusionNumberAuthAlertProtocolClickEvent('410012', '一键登录录授权页二次弹窗点击协议'),
+
   /// 一键登录内部错误码，请注意1600011及1600012错误内均含有运营商返回码
   /// 具体错误在碰到之后查阅 https://help.aliyun.com/document_detail/85351.html?spm=a2c4g.11186623.6.561.32a7360cxvWk6H
   // 接口成功

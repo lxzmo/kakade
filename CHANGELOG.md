@@ -1,4 +1,8 @@
-## 0.0.3
+## 0.0.5
+
+* Improve the iOS platform
+
+## 0.0.4
 
 * 兼容iOS模拟器
 

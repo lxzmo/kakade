@@ -15,7 +15,6 @@ public class SwiftKakadePlugin: NSObject, FlutterPlugin{
     var methodChannel: FlutterMethodChannel?
 
     #if targetEnvironment(simulator)
-        
     #else
 
     let authUIBuilder: AuthUIBuilder = .init()
@@ -49,11 +48,10 @@ public class SwiftKakadePlugin: NSObject, FlutterPlugin{
         registrar.addMethodCallDelegate(instance, channel: channel)
         instance.methodChannel = channel
         #if targetEnvironment(simulator)
-        // 模拟器逻辑，如果需要的话
         #else
         instance.authUIBuilder.register = registrar
         // 设置代理
-        instance.delegate = AuthDelegate(flutterChannel: channel)
+        instance.delegate = AuthDelegate(flutterChannel: channel,instance: instance)
         instance.uiDelegate = AuthUIDelegate(instance: instance)
         // 验证网络是否可用
         instance.httpAuthority()
@@ -78,7 +76,6 @@ public class SwiftKakadePlugin: NSObject, FlutterPlugin{
                 getSDKVersion(result: result)
                 #endif
             #if targetEnvironment(simulator)
-            // 模拟器逻辑，如果需要的话
             #else
             case "getPlatformVersion":
                 // 获取平台版本
@@ -202,6 +199,7 @@ public class SwiftKakadePlugin: NSObject, FlutterPlugin{
     // 结束 登录注册场景
     public func stopLoginRegisterScene(){
         handler?.stopScene(withTemplateId: AlicomFusionTemplateId_100001)
+        destroy()
     }
 
     // 更换手机号场景
