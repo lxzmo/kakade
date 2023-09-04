@@ -1,26 +1,33 @@
 package com.example.kakade;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.res.AssetManager;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
+import com.example.kakade.model.AuthResponseModel;
 import com.alicom.fusion.auth.AlicomFusionBusiness;
 
+import java.lang.ref.WeakReference;
+import java.util.Objects;
+
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.embedding.engine.plugins.activity.ActivityAware;
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
+import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 
 /** KakadePlugin */
-public class KakadePlugin implements FlutterPlugin, MethodCallHandler {
+public class KakadePlugin implements FlutterPlugin, MethodCallHandler ,ActivityAware{
 
     private static final String TAG = "KakadePlugin";
 
-     private AuthClient authClient;
-    
-    /// The MethodChannel that will the communication between Flutter and native Android
-    ///
-    /// This local reference serves to register the plugin with the Flutter Engine and unregister it
-    /// when the Flutter Engine is detached from the Activity
+    private AuthClient authClient;
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
@@ -43,6 +50,14 @@ public class KakadePlugin implements FlutterPlugin, MethodCallHandler {
              case "initSdk":
                 authClient.initSdk(call.arguments, result);
                 break;
+            case "loginRegister":
+                // 登录注册场景
+                authClient.loginRegister(result);
+                break;
+            case "stopLoginRegisterScene":
+                // 结束登录注册
+                authClient.stopLoginRegisterScene();
+                break;
             default:
                 result.notImplemented();
         }
@@ -55,7 +70,30 @@ public class KakadePlugin implements FlutterPlugin, MethodCallHandler {
 
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
+        Log.d(TAG, "onDetachedFromEngine");
         authClient.setFlutterPluginBinding(null);
         authClient.getChannel().setMethodCallHandler(null);
+    }
+
+    @Override
+    public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
+        WeakReference<Activity> activityWeakReference = new WeakReference<>(binding.getActivity());
+        authClient.setActivity(activityWeakReference);
+    }
+
+    @Override
+    public void onDetachedFromActivityForConfigChanges() {
+    }
+
+    @Override
+    public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding binding) {
+    }
+
+    @Override
+    public void onDetachedFromActivity() {
+        Log.d(TAG, "onDetachedFromActivity");
+        authClient.setFlutterPluginBinding(null);
+        authClient.getChannel().setMethodCallHandler(null);
+        authClient.setActivity(null);
     }
 }

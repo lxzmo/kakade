@@ -1,7 +1,5 @@
 package com.example.kakade.model;
 
-import android.content.Context;
-
 public class AuthModel {
     private String androidSchemeCode;
 
@@ -10,8 +8,6 @@ public class AuthModel {
     private Boolean enableLog;
 
     private AuthUIModel authUIModel;
-
-    private Context mContext;
 
     public void setAndroidSchemeCode(String androidSchemeCode) {
         this.androidSchemeCode = androidSchemeCode;
@@ -43,13 +39,5 @@ public class AuthModel {
 
     public AuthUIModel getAuthUIModel() {
         return authUIModel;
-    }
-
-    public void setContext(Context context) {
-        this.mContext = context;
-    }
-    
-    public Context getContext() {
-        return mContext;
     }
 }

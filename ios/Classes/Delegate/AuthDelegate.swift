@@ -68,6 +68,7 @@ class AuthDelegate: NSObject, AlicomFusionAuthDelegate{
     // 场景流程结束
     func onTemplateFinish(_ handler: AlicomFusionAuthHandler, event: AlicomFusionEvent) {
         // 实现场景流程结束的逻辑
+        handler.stopScene(withTemplateId: AlicomFusionTemplateId_100001)
         print("kakadeCallback 场景流程结束")
     }
 

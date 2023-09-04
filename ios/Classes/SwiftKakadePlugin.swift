@@ -180,6 +180,10 @@ public class SwiftKakadePlugin: NSObject, FlutterPlugin{
             result(FlutterError(code: AlicomFusionTokenVerifyFail, message: "初始化失败，参数不正确：iOS的schemeCode为空", details: nil))
             return
         }
+        if let enableLog: Bool = params["enableLog"] as? Bool {
+            // 设置是否打印日志
+            AlicomFusionLog.logEnable(enableLog ?? false)
+        }
         // 设置参数
         authConfig = AuthConfig(params: params)
         let token = AlicomFusionAuthToken(tokenStr:tokenStr)
@@ -198,7 +202,7 @@ public class SwiftKakadePlugin: NSObject, FlutterPlugin{
 
     // 结束 登录注册场景
     public func stopLoginRegisterScene(){
-        handler?.stopScene(withTemplateId: AlicomFusionTemplateId_100001)
+        handler?.continueScene(withTemplateId: AlicomFusionTemplateId_100001,isSuccess: true)
         destroy()
     }
 

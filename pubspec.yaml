@@ -1,7 +1,7 @@
 name: kakade
 description: Flutter 阿里云融合认证 Flutter插件.
 repository: https://github.com/lxzmo/kakade
-version: 0.0.5
+version: 0.0.6
 homepage: https://github.com/lxzmo/kakade
 
 environment:

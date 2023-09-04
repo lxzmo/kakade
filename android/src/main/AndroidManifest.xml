@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.example.kakade">
+<manifest 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.kakade">
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
     
 <application 
+    tools:targetApi="m"
     android:allowBackup="true" 
+    android:usesCleartextTraffic="true"
     android:icon="@mipmap/ic_launcher" 
     android:networkSecurityConfig="@xml/network_security_config" 
     android:roundIcon="@mipmap/ic_launcher_round" 
     android:supportsRtl="true" android:theme="@style/Theme.FusionAuthDemo">
+
+     <activity android:name=".mask.DecoyMaskActivity"
+            android:theme="@style/TransparentTheme"
+            />
+
         <activity 
             android:exported="true" 
             android:name="com.alicom.fusion.demo.MainActivity"
@@ -72,5 +82,7 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
+
+        
 
     </application></manifest>
