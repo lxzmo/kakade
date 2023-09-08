@@ -24,9 +24,9 @@ A new Flutter plugin project.
   
   s.platform = :ios, '11.0'
 
-  s.vendored_frameworks = 'frameworks/*.framework'
+  s.vendored_frameworks = 'SDK/*.framework'
   s.framework = 'Network'
-  s.resource = 'frameworks/AlicomFusionAuth.framework/AlicomFusionAuth.bundle'
+  s.resource = 'SDK/ATAuthSDK.bundle'
 
   s.xcconfig = {
     'OTHER_LDFLAGS' => '-ObjC',

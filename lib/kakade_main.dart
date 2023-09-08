@@ -18,15 +18,15 @@ class Kakade {
   }
 
   // 初始化
-  static Future<String?> initSdk({required AuthConfig authConfig}) {
-    return _methodChannel.invokeMethod(
+  static Future<bool?> initSdk({required AuthConfig authConfig}) async {
+    return await _methodChannel.invokeMethod(
       'initSdk',
       authConfig.toJson(),
     );
   }
 
   // 更新手机号
-  static void updatePhoneNumber({required String number}) {
+  static void updatePhoneNumber(String number) {
     _methodChannel.invokeMethod('updatePhoneNumber', number);
   }
 
@@ -36,51 +36,83 @@ class Kakade {
   }
 
   // SDK回调
-  static void sdkCallback({onSdkCallbackEvent, updateToken}) {
+  static void sdkCallback(
+      {onSDKTokenAuthSuccess,
+      onSDKTokenUpdate,
+      onSDKTokenAuthFailure,
+      onVerifySuccess,
+      onHalfwayVerifySuccess,
+      onVerifyFailed,
+      onTemplateFinish,
+      onGetPhoneNumber,
+      onProtocolClick,
+      onVerifyInterrupt,
+      onAuthEvent}) {
     _methodChannel.setMethodCallHandler((call) async {
+      final AuthResponseModel responseModel = AuthResponseModel.fromJson(
+        Map.from(call.arguments),
+      );
       switch (call.method) {
-        case 'onSdkCallbackEvent':
-          final AuthResponseModel responseModel = AuthResponseModel.fromJson(
-            Map.from(call.arguments),
-          );
-          await onSdkCallbackEvent(responseModel);
+        case 'onSDKTokenAuthSuccess':
+          // token鉴权成功
+          await onSDKTokenAuthSuccess();
           break;
         case 'onSDKTokenUpdate':
           // 获取新Token
-          return await updateToken();
+          return await onSDKTokenUpdate();
+        case 'onSDKTokenAuthFailure':
+          // token鉴权失败
+          await onSDKTokenAuthFailure(responseModel);
+          break;
+        case 'onVerifySuccess':
+          // 认证成功
+          onVerifySuccess(responseModel);
+          break;
+        case 'onHalfwayVerifySuccess':
+          // 中途认证节点
+          onHalfwayVerifySuccess(responseModel);
+          break;
+        case 'onVerifyFailed':
+          // 认证失败
+          onVerifyFailed(responseModel);
+          break;
+        case 'onTemplateFinish':
+          // 场景流程结束
+          onTemplateFinish(responseModel);
+          break;
+        case 'onGetPhoneNumber':
+          // 填充手机号
+          return onGetPhoneNumber();
+        case 'onProtocolClick':
+          // 点击协议富文本
+          onProtocolClick(responseModel);
+          break;
+        case 'onVerifyInterrupt':
+          // 认证中断
+          onVerifyInterrupt(responseModel);
+          break;
+        case 'onAuthEvent':
+          // 场景事件回调
+          onAuthEvent(responseModel);
+          break;
         default:
           throw UnsupportedError('Unrecognized JSON message');
       }
     });
   }
 
-  // 登录注册场景
-  static void loginRegister() {
-    _methodChannel.invokeMethod('loginRegister');
+  // 开始拉起场景
+  static void startScene() {
+    _methodChannel.invokeMethod('startScene');
   }
 
-  // 结束登录注册
-  static void stopLoginRegisterScene() {
-    _methodChannel.invokeMethod('stopLoginRegisterScene');
+  // 继续场景
+  static void continueScene(bool isAuthSuccess) {
+    _methodChannel.invokeMethod('continueScene', isAuthSuccess);
   }
 
-  // 更换手机号场景
-  static void changeMobile() {
-    _methodChannel.invokeMethod('changeMobile');
-  }
-
-  // 重置密码场景
-  static void resetPassword() {
-    _methodChannel.invokeMethod('resetPassword');
-  }
-
-  // 绑定新手机号场景
-  static void bindNewMobile() {
-    _methodChannel.invokeMethod('bindNewMobile');
-  }
-
-  // 验证绑定手机号场景
-  static void verifyBindMobile() {
-    _methodChannel.invokeMethod('verifyBindMobile');
+  // 结束场景
+  static void stopScene() {
+    _methodChannel.invokeMethod('stopScene');
   }
 }

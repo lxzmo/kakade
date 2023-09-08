@@ -1,3 +1,7 @@
+## 0.0.7
+
+* Improve the Android&iOS platform
+
 ## 0.0.6
 
 * Improve the Android platform

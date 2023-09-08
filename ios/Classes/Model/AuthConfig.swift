@@ -1,12 +1,14 @@
 import Foundation
 
 struct AuthConfig {
+    var currentTemplatedId: String
     var tokenStr: String
     var iosSchemeCode: String
     var enableLog: Bool
     var authUIConfig: AuthUIConfig
 
     init(params: [String: Any]) {
+        currentTemplatedId = params["currentTemplatedId"] as? String ?? ""
         tokenStr = params["tokenStr"] as? String ?? ""
         iosSchemeCode = params["iosSchemeCode"] as? String ?? ""
         enableLog = params["enableLog"] as? Bool ?? false

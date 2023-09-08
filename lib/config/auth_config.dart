@@ -1,6 +1,7 @@
 import 'auth_ui_config.dart';
 
 class AuthConfig {
+  final String currentTemplatedId;
   final String tokenStr;
   final String iosSchemeCode;
   final String androidSchemeCode;
@@ -8,6 +9,7 @@ class AuthConfig {
   final AuthUIConfig? authUIConfig;
 
   AuthConfig({
+    required this.currentTemplatedId,
     required this.tokenStr,
     required this.iosSchemeCode,
     required this.androidSchemeCode,
@@ -17,6 +19,7 @@ class AuthConfig {
 
   Map<String, dynamic> toJson() {
     return {
+      'currentTemplatedId': currentTemplatedId,
       'tokenStr': tokenStr,
       'iosSchemeCode': iosSchemeCode,
       'androidSchemeCode': androidSchemeCode,

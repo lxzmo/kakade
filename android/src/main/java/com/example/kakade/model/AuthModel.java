@@ -1,6 +1,8 @@
 package com.example.kakade.model;
 
 public class AuthModel {
+    private String currentTemplatedId;
+
     private String androidSchemeCode;
 
     private String tokenStr;
@@ -8,6 +10,14 @@ public class AuthModel {
     private Boolean enableLog;
 
     private AuthUIModel authUIModel;
+
+    public void setCurrentTemplatedId(String currentTemplatedId) {
+        this.currentTemplatedId = currentTemplatedId;
+    }
+
+    public String getCurrentTemplatedId() {
+        return currentTemplatedId;
+    }
 
     public void setAndroidSchemeCode(String androidSchemeCode) {
         this.androidSchemeCode = androidSchemeCode;

@@ -27,7 +27,7 @@ public class DecoyMaskActivity extends Activity {
         AuthClient.decoyMaskActivity = this;
         overridePendingTransition(R.anim.slide_up, R.anim.stay_animation);
         AlicomFusionBusiness mAlicomFusionBusiness = authClient.mAlicomFusionBusiness;
-        mAlicomFusionBusiness.startSceneWithTemplateId(this.getBaseContext(), "100001");
+        mAlicomFusionBusiness.startSceneWithTemplateId(this.getBaseContext(), authClient.getCurrentTemplatedId(),authClient.uiCallBack);
         super.onCreate(savedInstanceState);
     }
 

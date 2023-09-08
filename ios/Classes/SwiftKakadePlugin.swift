@@ -8,9 +8,6 @@ import UIKit
 import Foundation
 
 public class SwiftKakadePlugin: NSObject, FlutterPlugin{
-    // SDK回调事件
-    static var CALLBACK_EVENT: String = "onSdkCallbackEvent"
-
     // 通道
     var methodChannel: FlutterMethodChannel?
 
@@ -29,14 +26,8 @@ public class SwiftKakadePlugin: NSObject, FlutterPlugin{
     var uiDelegate: AuthUIDelegate?
     #endif
 
-    // 是否鉴权成功
-    var isActive: Bool = false {
-        didSet {
-            if isActive && isActive != oldValue {
-                print("kakade Token鉴权成功")
-            }
-        }
-    }
+    // 当前场景ID
+    var currentTemplatedId: String = "100001"
 
     // 当前手机号
     var phoneNumber: String = ""
@@ -54,20 +45,16 @@ public class SwiftKakadePlugin: NSObject, FlutterPlugin{
         instance.delegate = AuthDelegate(flutterChannel: channel,instance: instance)
         instance.uiDelegate = AuthUIDelegate(instance: instance)
         // 验证网络是否可用
-        instance.httpAuthority()
+        // instance.httpAuthority()
         #endif
     }
 
     // 处理方法
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         switch call.method {
-            case "initSdk":
-                // 初始化SDK
-                #if targetEnvironment(simulator)
-                result(FlutterError(code: "100000", message: "不支持模拟器架构", details: nil))
-                #else
-                initSdk(arguments: call.arguments, result: result)
-                #endif
+            case "getPlatformVersion":
+                // 获取平台版本
+                result("iOS " + UIDevice.current.systemVersion)
             case "getSDKVersion":
                 // 获取SDK版本
                 #if targetEnvironment(simulator)
@@ -75,48 +62,37 @@ public class SwiftKakadePlugin: NSObject, FlutterPlugin{
                 #else
                 getSDKVersion(result: result)
                 #endif
+            case "initSdk":
+                // 初始化SDK
+                #if targetEnvironment(simulator)
+                result(FlutterError(code: "100000", message: "不支持模拟器架构", details: nil))
+                #else
+                initSdk(arguments: call.arguments, result: result)
+                #endif
             #if targetEnvironment(simulator)
             #else
-            case "getPlatformVersion":
-                // 获取平台版本
-                result("iOS " + UIDevice.current.systemVersion)
+            case "startScene":
+                // 开始拉起场景
+                startScene(result: result)
+            case "continueScene":
+                // 继续场景
+                continueScene(arguments: call.arguments, result: result)
             case "updatePhoneNumber":
                 // 更新手机号
                 updatePhoneNumber(arguments: call.arguments, result: result)
+             case "stopScene":
+                // 结束场景
+                stopScene()
             case "destroy":
                 // 销毁服务
                 destroy()
-            case "loginRegister":
-                // 登录注册场景
-                loginRegister(result: result)
-            case "stopLoginRegisterScene":
-                // 结束登录注册
-                stopLoginRegisterScene()
-            case "changeMobile":
-                // 更换手机号场景
-                changeMobile(result: result)
-            case "resetPassword":
-                // 重置密码场景
-                resetPassword(result: result)
-            case "bindNewMobile":
-                // 绑定新手机号场景
-                bindNewMobile(result: result)
-            case "verifyBindMobile":
-                // 验证绑定手机号场景
-                verifyBindMobile(result: result)
-             #endif
+            #endif
             default:
                 result(FlutterMethodNotImplemented)
         }
     }
     #if targetEnvironment(simulator) 
     #else
-
-    // 获取SDK版本
-    public func getSDKVersion(result: @escaping FlutterResult) {
-        let version = AlicomFusionAuthHandler.getSDKVersion()
-        result("阿里云融合认证版本:\(version)")
-    }
 
     // 检查联网
     public func httpAuthority() {
@@ -136,33 +112,12 @@ public class SwiftKakadePlugin: NSObject, FlutterPlugin{
         }
     }
 
-    // 销毁服务
-    public func destroy() {
-        handler?.destroy();
-        handler = nil;
-        isActive = false;
-    }
-    
-    // 更新认证后返回的手机号
-    public func updatePhoneNumber(arguments: Any?, result: @escaping FlutterResult){
-        guard let number: String = arguments as? String else {
-            // 参数有问题
-            result(FlutterError(code: AlicomFusionTokenVerifyFail, message: "初始化失败，参数不正确：InitConfig不能为空", details: nil))
-            return
-        }
-        phoneNumber = number;
-        print("kakade \(phoneNumber)")
+    // 获取SDK版本
+    public func getSDKVersion(result: @escaping FlutterResult) {
+        let version = AlicomFusionAuthHandler.getSDKVersion()
+        result("阿里云融合认证版本:\(version)")
     }
 
-    // 更新Token
-    public func updateSDKToken(completion: @escaping (String) -> Void) {
-        methodChannel?.invokeMethod("onSDKTokenUpdate", arguments: nil) { result in
-            if let newTokenStr = result as? String {
-                completion(newTokenStr)
-            }
-        }
-    }
-    
     // 初始化SDK，传入 tokenStr:鉴权Token ， schemeCode:方案号
     public func initSdk(arguments: Any?, result: @escaping FlutterResult){
         guard let params: [String: Any] = arguments as? [String: Any] else {
@@ -184,62 +139,59 @@ public class SwiftKakadePlugin: NSObject, FlutterPlugin{
             // 设置是否打印日志
             AlicomFusionLog.logEnable(enableLog ?? false)
         }
+        if let currentTemplatedId: String = params["currentTemplatedId"] as? String {
+            // 设置当前场景ID
+            self.currentTemplatedId = currentTemplatedId
+        }
         // 设置参数
         authConfig = AuthConfig(params: params)
         let token = AlicomFusionAuthToken(tokenStr:tokenStr)
         handler = AlicomFusionAuthHandler(token: token, schemeCode: schemeCode)
         handler?.setFusionAuthDelegate(delegate!)
+        result(true)
     }
-    
-    // 登录注册场景
-    public func loginRegister(result: @escaping FlutterResult){
+
+    // 开始拉起场景
+    public func startScene(result: @escaping FlutterResult){
         guard let viewController = WindowUtils.getCurrentViewController() else {
             result(FlutterError(code: AlicomFusionTokenVerifyFail, message: "当前无法获取Flutter Activity,请重启再试", details: nil))
             return
         }
-        handler?.startSceneUI(withTemplateId: AlicomFusionTemplateId_100001, viewController: viewController,delegate:uiDelegate!)
+        // handler?.startScene(withTemplateId: currentTemplatedId, viewController: viewController)
+        handler?.startSceneUI(withTemplateId: currentTemplatedId, viewController: viewController,delegate:uiDelegate!)
     }
 
-    // 结束 登录注册场景
-    public func stopLoginRegisterScene(){
-        handler?.continueScene(withTemplateId: AlicomFusionTemplateId_100001,isSuccess: true)
-        destroy()
+    // 继续场景
+    public func continueScene(arguments: Any?, result: @escaping FlutterResult){
+        let isSuccess: Bool = arguments as? Bool ?? false
+        handler?.continueScene(withTemplateId: currentTemplatedId,isSuccess: isSuccess)
     }
 
-    // 更换手机号场景
-    public func changeMobile(result: @escaping FlutterResult){
-        guard let viewController = WindowUtils.getCurrentViewController() else {
-            result(FlutterError(code: AlicomFusionTokenVerifyFail, message: "当前无法获取Flutter Activity,请重启再试", details: nil))
-            return
+    // 更新认证后返回的手机号
+    public func updatePhoneNumber(arguments: Any?, result: @escaping FlutterResult){
+        let number: String = arguments as? String ?? ""
+        self.phoneNumber = number;
+        print("kakadephoneNumber \(phoneNumber)")
+    }
+
+    // 更新Token
+    public func updateSDKToken(completion: @escaping (String) -> Void) {
+        methodChannel?.invokeMethod("onSDKTokenUpdate", arguments: nil) { result in
+            if let newTokenStr = result as? String {
+                completion(newTokenStr)
+            }
         }
-        handler?.startScene(withTemplateId: AlicomFusionTemplateId_100002, viewController: viewController)
     }
 
-    // 重置密码场景
-    public func resetPassword(result: @escaping FlutterResult){
-        guard let viewController = WindowUtils.getCurrentViewController() else {
-            result(FlutterError(code: AlicomFusionTokenVerifyFail, message: "当前无法获取Flutter Activity,请重启再试", details: nil))
-            return
-        }
-        handler?.startScene(withTemplateId: AlicomFusionTemplateId_100003, viewController: viewController)
+    // 结束场景
+    public func stopScene(){
+        handler?.stopScene(withTemplateId: currentTemplatedId)
     }
 
-    // 绑定新手机号场景
-    public func bindNewMobile(result: @escaping FlutterResult){
-        guard let viewController = WindowUtils.getCurrentViewController() else {
-            result(FlutterError(code: AlicomFusionTokenVerifyFail, message: "当前无法获取Flutter Activity,请重启再试", details: nil))
-            return
-        }
-        handler?.startScene(withTemplateId: AlicomFusionTemplateId_100004, viewController: viewController)
-    }
-
-    // 验证绑定手机号场景
-    public func verifyBindMobile(result: @escaping FlutterResult){
-        guard let viewController = WindowUtils.getCurrentViewController() else {
-            result(FlutterError(code: AlicomFusionTokenVerifyFail, message: "当前无法获取Flutter Activity,请重启再试", details: nil))
-            return
-        }
-        handler?.startScene(withTemplateId: AlicomFusionTemplateId_100005, viewController: viewController)
+    // 销毁服务
+    public func destroy() {
+        handler?.destroy();
+        handler = nil;
     }
     #endif
 }

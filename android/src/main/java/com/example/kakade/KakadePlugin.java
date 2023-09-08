@@ -50,13 +50,21 @@ public class KakadePlugin implements FlutterPlugin, MethodCallHandler ,ActivityA
              case "initSdk":
                 authClient.initSdk(call.arguments, result);
                 break;
-            case "loginRegister":
-                // 登录注册场景
-                authClient.loginRegister(result);
+            case "startScene":
+                // 开始拉起场景
+                authClient.startScene(result);
                 break;
-            case "stopLoginRegisterScene":
+            case "continueScene":
+                // 继续场景
+                authClient.continueScene(call.arguments);
+                break;
+            case "stopScene":
                 // 结束登录注册
-                authClient.stopLoginRegisterScene();
+                authClient.stopScene();
+                break;
+            case "destroy":
+                // 销毁服务
+                authClient.destroy();
                 break;
             default:
                 result.notImplemented();

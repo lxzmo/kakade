@@ -21,6 +21,7 @@ class _MyAppState extends State<MyApp> {
   String _aliAuthVersion = '获取阿里云插件版本中';
 
   final AuthConfig _authConfig = AuthConfig(
+      currentTemplatedId: '',
       tokenStr: '',
       iosSchemeCode: '',
       androidSchemeCode: '',
@@ -38,8 +39,8 @@ class _MyAppState extends State<MyApp> {
     // 创建实例
     Kakade.initSdk(authConfig: _authConfig);
     Kakade.sdkCallback(
-        onSdkCallbackEvent: _onSdkCallbackEvent,
-        updateToken: fetchNewTokenFromServer);
+        onSDKTokenAuthSuccess: _onSdkCallbackEvent,
+        onSDKTokenUpdate: fetchNewTokenFromServer);
   }
 
   // 获取新Token
@@ -120,42 +121,12 @@ class _MyAppState extends State<MyApp> {
               },
               child: const Text("初始化SDK"),
             ),
-            ElevatedButton(
-              onPressed: () {
-                Kakade.updatePhoneNumber(number: '18610992356');
-              },
-              child: const Text("更新手机号"),
-            ),
             _divider('授权页面操作'),
             ElevatedButton(
               onPressed: () async {
-                Kakade.loginRegister();
+                Kakade.startScene();
               },
               child: const Text("登录注册场景"),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                Kakade.changeMobile();
-              },
-              child: const Text("更换手机号场景"),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                Kakade.resetPassword();
-              },
-              child: const Text("重置密码场景"),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                Kakade.bindNewMobile();
-              },
-              child: const Text("绑定新手机号场景"),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                Kakade.verifyBindMobile();
-              },
-              child: const Text("验证绑定手机号场景"),
             ),
             _divider("操作日志"),
             Flexible(

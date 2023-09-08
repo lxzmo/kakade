@@ -66,8 +66,35 @@ enum AuthResultCode {
   /// 具体错误在碰到之后查阅 https://help.aliyun.com/document_detail/85351.html?spm=a2c4g.11186623.6.561.32a7360cxvWk6H
   // 接口成功
   alicomFusionNumberAuthInnerCodeSuccess('1600000', '接口成功'),
+  // 获取运营商配置信息失败
+  alicomFusionNumberAuthInnerCodeGetOperatorInfoFailed(
+      '1600004', '获取运营商配置信息失败'),
+  // 未检测到sim卡
+  alicomFusionNumberAuthInnerCodeNoSIMCard('1600007', '未检测到sim卡'),
+  // 蜂窝网络未开启或不稳定
+  alicomFusionNumberAuthInnerCodeNoCellularNetwork('1600008', '蜂窝网络未开启或不稳定'),
+  // 无法判运营商
+  alicomFusionNumberAuthInnerCodeUnknownOperator('1600009', '无法判运营商'),
   // 未知异常
-  alicomFusionNumberAuthInnerCodeUnknownError('1600010', '未知异常');
+  alicomFusionNumberAuthInnerCodeUnknownError('1600010', '未知异常'),
+  // 获取token失败
+  alicomFusionNumberAuthInnerCodeGetTokenFailed('1600011', '获取token失败'),
+  // 预取号失败
+  alicomFusionNumberAuthInnerCodeGetMaskPhoneFailed('1600012', '预取号失败'),
+  // 运营商维护升级，该功能不可用
+  alicomFusionNumberAuthInnerCodeInterfaceDemoted('1600013', '运营商维护升级，该功能不可用'),
+  // 运营商维护升级，该功能已达最大调用次数
+  alicomFusionNumberAuthInnerCodeInterfaceLimited(
+      '1600014', '运营商维护升级，该功能已达最大调用次数'),
+  // 接口超时
+  alicomFusionNumberAuthInnerCodeInterfaceTimeout('1600015', '接口超时'),
+  // AppID、Appkey解析失败
+  alicomFusionNumberAuthInnerCodeDecodeAppInfoFailed(
+      '1600017', 'AppID、Appkey解析失败'),
+  // 运营商已切换
+  alicomFusionNumberAuthInnerCodeCarrierChanged('1600021', '运营商已切换'),
+  // 终端环境检测失败（终端不支持认证 / 终端检测参数错误）
+  alicomFusionNumberAuthInnerCodeEnvCheckFail('1600025', '终端环境检测失败');
 
   factory AuthResultCode.fromCode(String resultCode) {
     return values.firstWhere(

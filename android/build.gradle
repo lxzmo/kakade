@@ -83,7 +83,7 @@ dependencies{
     // implementation 'com.alibaba.fastjson2:fastjson2:2.0.14.android'
     // https://mvnrepository.com/artifact/com.google.code.gson/gson
     implementation 'com.google.code.gson:gson:2.9.0'
-    implementation(name:'fusionauth-1.0.4-online-release', ext:'aar')
+    implementation(name:'fusionauth-1.0.5-online-release', ext:'aar')
     implementation 'com.google.android.material:material:1.2.0'
     implementation 'com.android.support:appcompat-v7:23.2.1'
     // testImplementation 'junit:junit:4.13.2'

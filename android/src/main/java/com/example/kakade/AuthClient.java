@@ -6,6 +6,11 @@ import android.content.Intent;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
+import android.graphics.Color;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.RelativeLayout;
+import android.util.TypedValue;
 
 import com.alicom.fusion.auth.AlicomFusionAuthCallBack;
 import com.alicom.fusion.auth.AlicomFusionBusiness;
@@ -14,6 +19,14 @@ import com.alicom.fusion.auth.HalfWayVerifyResult;
 import com.alicom.fusion.auth.error.AlicomFusionEvent;
 import com.alicom.fusion.auth.token.AlicomFusionAuthToken;
 import com.alicom.fusion.auth.AlicomFusionLog;
+import com.alicom.fusion.auth.AlicomFusionAuthUICallBack;
+import com.alicom.fusion.auth.numberauth.FusionNumberAuthModel;
+import com.alicom.fusion.auth.smsauth.AlicomFusionInputView;
+import com.alicom.fusion.auth.smsauth.AlicomFusionVerifyCodeView;
+import com.alicom.fusion.auth.upsms.AlicomFusionUpSMSView;
+import com.alicom.fusion.auth.numberauth.AlicomFusionSwitchLogin;
+import com.mobile.auth.gatewayauth.AuthRegisterViewConfig;
+import com.mobile.auth.gatewayauth.CustomInterface;
 
 import androidx.annotation.NonNull;
 
@@ -22,6 +35,7 @@ import com.example.kakade.model.AuthResponseModel;
 import com.example.kakade.model.AuthUIModel;
 import com.example.kakade.utils.Constant;
 import com.example.kakade.mask.DecoyMaskActivity;
+import com.example.kakade.utils.AppUtils;
 import com.example.kakade.R;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -38,7 +52,6 @@ import io.flutter.plugin.common.MethodChannel;
 
 public class AuthClient {
     private static final String TAG = AuthClient.class.getSimpleName();
-    public static final String CALLBACK_EVENT = "onSdkCallbackEvent";
     public static WeakReference<Activity> mActivity;
 
     public AlicomFusionBusiness mAlicomFusionBusiness;
@@ -93,6 +106,7 @@ public class AuthClient {
             result.error("100000", "初始化失败,token为空", null);
             return;
         }
+        currentTemplatedId = authModel.getCurrentTemplatedId();
         boolean logEnable = authModel.getEnableLog();
         String token = authModel.getTokenStr();
         String schemeCode = authModel.getAndroidSchemeCode();
@@ -118,7 +132,7 @@ public class AuthClient {
                 mActivity.get().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mChannel.invokeMethod(CALLBACK_EVENT, responseModel.toJson());
+                        mChannel.invokeMethod("onSDKTokenAuthSuccess", responseModel.toJson());
                     }
                 });
             }
@@ -126,11 +140,11 @@ public class AuthClient {
             @Override
             public void onSDKTokenAuthFailure(AlicomFusionAuthToken token1, AlicomFusionEvent alicomFusionEvent) {
                 Log.d(TAG, "AlicomFusionAuthCallBack---onSDKTokenAuthFailure " +alicomFusionEvent.getErrorCode());
-                AuthResponseModel responseModel = AuthResponseModel.customModel("300006","token鉴权失败");
+                AuthResponseModel responseModel = AuthResponseModel.customModel(alicomFusionEvent.getErrorCode(),alicomFusionEvent.getErrorMsg());
                 mActivity.get().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mChannel.invokeMethod(CALLBACK_EVENT, responseModel.toJson());
+                        mChannel.invokeMethod("onSDKTokenAuthFailure", responseModel.toJson());
                     }
                 });
             }
@@ -138,11 +152,11 @@ public class AuthClient {
             @Override
             public void onVerifySuccess(String token, String s1,AlicomFusionEvent alicomFusionEvent) {
                 Log.d(TAG, "AlicomFusionAuthCallBack---onVerifySuccess  "+token);
-                AuthResponseModel responseModel = AuthResponseModel.customModel("400006","一键登录获取token成功",token);
+                AuthResponseModel responseModel = AuthResponseModel.customModel(alicomFusionEvent.getErrorCode(),alicomFusionEvent.getErrorMsg(),token);
                 mActivity.get().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mChannel.invokeMethod(CALLBACK_EVENT, responseModel.toJson());
+                        mChannel.invokeMethod("onVerifySuccess", responseModel.toJson());
                     }
                 });
             }
@@ -161,11 +175,7 @@ public class AuthClient {
             @Override
             public void onTemplateFinish(AlicomFusionEvent alicomFusionEvent) {
                 Log.d(TAG, "AlicomFusionAuthCallBack---onTemplateFinish  "+alicomFusionEvent.getErrorCode());
-                mAlicomFusionBusiness.stopSceneWithTemplateId(currentTemplatedId);
-                mAlicomFusionBusiness.destory();
-                if (decoyMaskActivity != null) {
-                    decoyMaskActivity.finish();
-                }
+                stopScene();
             }
 
             @Override
@@ -186,11 +196,49 @@ public class AuthClient {
             }
         };
         mAlicomFusionBusiness.setAlicomFusionAuthCallBack(mAlicomFusionAuthCallBack);
+        result.success(true);
     }
 
 
-    // 登录注册场景
-    public void loginRegister(@NonNull MethodChannel.Result result) {
+    public AlicomFusionAuthUICallBack uiCallBack = new AlicomFusionAuthUICallBack() {
+        @Override
+        public void onPhoneNumberVerifyUICustomView(String templateId,String nodeId, FusionNumberAuthModel fusionNumberAuthModel) {
+            // fusionNumberAuthModel.getBuilder()
+            // .setNumberLayoutGravity(0);
+            fusionNumberAuthModel.removeAuthRegisterViewConfig();
+            fusionNumberAuthModel.addAuthRegistViewConfig("number",new AuthRegisterViewConfig.Builder()
+                    .setView(initNumberView())
+                    .setRootViewId(AuthRegisterViewConfig.RootViewId.ROOT_VIEW_ID_NUMBER)
+                    .build());
+        }
+
+        @Override
+        public void onSMSCodeVerifyUICustomView(String templateId,String s,boolean isAutoInput, AlicomFusionVerifyCodeView alicomFusionVerifyCodeView) {
+            
+
+        }
+
+        @Override
+        public void onSMSSendVerifyUICustomView(String templateId, String nodeId, AlicomFusionUpSMSView view, String receivePhoneNumber, String verifyCode) {
+            
+
+        }
+        
+    };
+
+    protected View initNumberView() {
+        TextView var10000 = new TextView(mActivity.get());
+        var10000.setText("+86 ");
+        var10000.setTextColor(-16777216);
+        var10000.setTextSize((float)AppUtils.dp2px(mActivity.get(), 10.0F));
+        RelativeLayout.LayoutParams var10002 = new RelativeLayout.LayoutParams(-2, -2);
+        var10002.setMargins(AppUtils.dp2px(mActivity.get(), (float)((int)((double)AppUtils.getPhoneWidthPixels(mActivity.get()) * 0.075))), 0, 0, 0);
+        var10000.setLayoutParams(var10002);
+        return var10000;
+    }
+
+    // 开始拉起场景
+    public void startScene(@NonNull MethodChannel.Result result) {
         Activity activity = mActivity.get();
         if (activity == null) {
             result.error("10000", "当前无法获取Flutter Activity,请重启再试", null);
@@ -200,10 +248,26 @@ public class AuthClient {
         Intent intent = new Intent(context, DecoyMaskActivity.class);
         activity.startActivity(intent);
     }
-    
-    // 结束登录注册
-    public void stopLoginRegisterScene() {
+
+    // 继续场景
+    public void continueScene(Object arguments) {
         mAlicomFusionBusiness.continueSceneWithTemplateId(currentTemplatedId,true);
+    }
+    
+    // 结束场景
+    public void stopScene() {
+        mAlicomFusionBusiness.stopSceneWithTemplateId(currentTemplatedId);
+        if (decoyMaskActivity != null) {
+            decoyMaskActivity.finish();
+        }
+    }
+
+    // 销毁服务
+    public void destroy() {
+        if(mAlicomFusionBusiness != null){
+            mAlicomFusionBusiness.destory();
+            mAlicomFusionBusiness = null;
+        }
     }
 
     public AuthModel getAuthModel() {
@@ -232,5 +296,9 @@ public class AuthClient {
 
     public void setChannel(MethodChannel mChannel) {
         this.mChannel = mChannel;
+    }
+
+    public String getCurrentTemplatedId(){
+        return currentTemplatedId;
     }
 }
