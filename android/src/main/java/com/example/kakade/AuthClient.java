@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.RelativeLayout;
 import android.util.TypedValue;
+import android.view.LayoutInflater;
+import android.widget.CheckBox;
 
 import com.alicom.fusion.auth.AlicomFusionAuthCallBack;
 import com.alicom.fusion.auth.AlicomFusionBusiness;
@@ -25,8 +27,11 @@ import com.alicom.fusion.auth.smsauth.AlicomFusionInputView;
 import com.alicom.fusion.auth.smsauth.AlicomFusionVerifyCodeView;
 import com.alicom.fusion.auth.upsms.AlicomFusionUpSMSView;
 import com.alicom.fusion.auth.numberauth.AlicomFusionSwitchLogin;
+import com.alicom.fusion.auth.numberauth.OtherPhoneLoginCallBack;
 import com.mobile.auth.gatewayauth.AuthRegisterViewConfig;
+import com.mobile.auth.gatewayauth.AuthRegisterXmlConfig;
 import com.mobile.auth.gatewayauth.CustomInterface;
+import com.mobile.auth.gatewayauth.ui.AbstractPnsViewDelegate;
 
 import androidx.annotation.NonNull;
 
@@ -92,8 +97,6 @@ public class AuthClient {
             Gson gson = new Gson();
             String jsonBean = gson.toJson(arguments);
             authModel = gson.fromJson(jsonBean, AuthModel.class);
-            AuthUIModel authUIModel = gson.fromJson(jsonBean, AuthUIModel.class);
-            authModel.setAuthUIModel(authUIModel);
             Log.d(TAG, "initSdk: " + jsonBean);
         } catch (Exception e) {
             Log.e(TAG, "解析AuthModel遇到错误：" + e);
@@ -203,8 +206,27 @@ public class AuthClient {
     public AlicomFusionAuthUICallBack uiCallBack = new AlicomFusionAuthUICallBack() {
         @Override
         public void onPhoneNumberVerifyUICustomView(String templateId,String nodeId, FusionNumberAuthModel fusionNumberAuthModel) {
-            // fusionNumberAuthModel.getBuilder()
-            // .setNumberLayoutGravity(0);
+            AuthUIModel authUIModel = authModel.getAuthUIModel();
+            fusionNumberAuthModel.getBuilder()
+            .setNavHidden(false)
+            .setLogoImgPath(authUIModel.getLogoImage())
+            .setLogoWidth(authUIModel.getLogoWidth())
+            .setLogoHeight(authUIModel.getLogoHeight())
+            .setLogBtnText(authUIModel.getLoginBtnText())
+            .setPrivacyConectTexts(new String[]{"&", "&", "&"} )
+            .setVendorPrivacyPrefix("《")
+            .setVendorPrivacySuffix("》")
+            .setAppPrivacyOne("《隐私协议》","https://test.h5.app.tbmao.com/user")
+            .setAppPrivacyTwo("","")
+            .setPrivacyOneColor(Color.BLACK)
+            .setPrivacyOperatorColor(Color.BLACK)
+            .setCheckBoxWidth(14)
+            .setCheckBoxHeight(14)
+            .setPrivacyAlertBtnHeigth(45)
+            .setPrivacyAlertHeight(250)
+            .setPrivacyAlertBtnBackgroundImgPath("login_btn_bg")
+            .setPrivacyAlertBtnTextSize(14)
+            .setLogBtnBackgroundPath("login_btn_bg");
             fusionNumberAuthModel.removeAuthRegisterViewConfig();
             fusionNumberAuthModel.addAuthRegistViewConfig("number",new AuthRegisterViewConfig.Builder()
                     .setView(initNumberView())
@@ -214,7 +236,35 @@ public class AuthClient {
 
         @Override
         public void onSMSCodeVerifyUICustomView(String templateId,String s,boolean isAutoInput, AlicomFusionVerifyCodeView alicomFusionVerifyCodeView) {
-            
+            // mActivity.get().runOnUiThread(new Runnable() {
+            //     @Override
+            //     public void run() {
+            //         AlicomFusionInputView inputView = alicomFusionVerifyCodeView.getInputView();
+                    // RelativeLayout inputNumberRootRL = inputView.getInputNumberRootRL();
+                    // View inflate = LayoutInflater.from(mActivity.get().getBaseContext()).inflate(R.layout.sms_title_content, null);
+                    // TextView otherLogin = inflate.findViewById(R.id.tv_test);
+                    // otherLogin.setOnClickListener(new View.OnClickListener() {
+                    //     @Override
+                    //     public void onClick(View v) {
+                    //         mAlicomFusionBusiness.destory();
+                    //     }
+                    // });
+                    // RelativeLayout.LayoutParams rl=new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    // rl.addRule(RelativeLayout.CENTER_IN_PARENT,RelativeLayout.TRUE);
+                    // inflate.setLayoutParams(rl);
+                    // inputNumberRootRL.addView(inflate);
+                    // RelativeLayout privacyRL = inputView.getPrivacyRL();
+                    // View inflate = LayoutInflater.from(mActivity.get().getBaseContext()).inflate(R.layout.fusion_sms_inputnumber, null);
+                    // TextView otherLogin = inflate.findViewById(R.id.fusion_getsms_privacytext);
+                    // otherLogin.setText("555");
+                    // RelativeLayout.LayoutParams rl=new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    // rl.addRule(RelativeLayout.CENTER_IN_PARENT,RelativeLayout.TRUE);
+                    // inflate.setLayoutParams(rl);
+                    
+            //         privacyRL.addView(inflate);
+                    
+            //     }
+            // });
 
         }
 

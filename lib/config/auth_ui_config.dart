@@ -1,39 +1,16 @@
 class AuthUIConfig {
   final String? nameLabelText;
-  final String? nameLabelColor;
-  final int? nameLabelSize;
-
-  final bool? hideOtherLoginBtn;
-
-  // 状态栏
-  final bool? prefersStatusBarHidden;
-
-  // 导航栏
-  final String? navTitle;
-  final String? navColor;
-  final bool? hideNavBackItem;
-  final String? navBackImage;
-
-  // slogan
-  final bool? sloganIsHidden;
-  final String? sloganText;
-  final String? sloganTextColor;
-  final int? sloganTextSize;
-
-  // 号码
-  final String? numberColor;
-  final int? numberFontSize;
 
   // 登录
   final String? loginBtnText;
-  final String? loginBtnTextColor;
-  final int? loginBtnTextSize;
-  final String? loginBtnBgColor;
 
   // 背景
   final String? backgroundColor;
 
   // logo
+  final String? logoImage;
+  final int? logoWidth;
+  final int? logoHeight;
   final bool? logoIsHidden;
 
   // 切换到其他方式
@@ -49,25 +26,11 @@ class AuthUIConfig {
 
   const AuthUIConfig({
     this.nameLabelText,
-    this.nameLabelColor,
-    this.nameLabelSize,
-    this.hideOtherLoginBtn,
-    this.prefersStatusBarHidden,
-    this.navTitle,
-    this.navColor,
-    this.hideNavBackItem,
-    this.navBackImage,
-    this.sloganIsHidden,
-    this.sloganText,
-    this.sloganTextColor,
-    this.sloganTextSize,
-    this.numberColor,
-    this.numberFontSize,
     this.loginBtnText,
-    this.loginBtnTextColor,
-    this.loginBtnTextSize,
-    this.loginBtnBgColor,
     this.backgroundColor,
+    this.logoImage,
+    this.logoWidth,
+    this.logoHeight,
     this.logoIsHidden,
     this.changeBtnIsHidden,
     this.changeBtnTitle,
@@ -79,25 +42,11 @@ class AuthUIConfig {
   Map<String, dynamic> toJson() {
     return {
       'nameLabelText': nameLabelText,
-      'nameLabelColor': nameLabelColor,
-      'nameLabelSize': nameLabelSize,
-      'hideOtherLoginBtn': hideOtherLoginBtn,
-      'prefersStatusBarHidden': prefersStatusBarHidden,
-      'navTitle': navTitle,
-      'navColor': navColor,
-      'hideNavBackItem': hideNavBackItem,
-      'navBackImage': navBackImage,
-      'sloganIsHidden': sloganIsHidden,
-      'sloganText': sloganText,
-      'sloganTextColor': sloganTextColor,
-      'sloganTextSize': sloganTextSize,
-      'numberColor': numberColor,
-      'numberFontSize': numberFontSize,
       'loginBtnText': loginBtnText,
-      'loginBtnTextColor': loginBtnTextColor,
-      'loginBtnTextSize': loginBtnTextSize,
-      'loginBtnBgColor': loginBtnBgColor,
       'backgroundColor': backgroundColor,
+      'logoImage': logoImage,
+      'logoWidth': logoWidth,
+      'logoHeight': logoHeight,
       'logoIsHidden': logoIsHidden,
       'changeBtnIsHidden': changeBtnIsHidden,
       'changeBtnTitle': changeBtnTitle,

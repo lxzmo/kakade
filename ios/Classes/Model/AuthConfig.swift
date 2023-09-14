@@ -56,6 +56,9 @@ struct AuthUIConfig: Codable {
     var backgroundColor: String? // 十六进制的颜色
 
     // logo
+    var logoImage: String?
+    var logoWidth: Int?
+    var logoHeight: Int?
     var logoIsHidden: Bool?
     
     // 切换到其他方式

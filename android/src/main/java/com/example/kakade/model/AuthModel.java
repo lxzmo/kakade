@@ -9,7 +9,7 @@ public class AuthModel {
 
     private Boolean enableLog;
 
-    private AuthUIModel authUIModel;
+    private AuthUIModel authUIConfig;
 
     public void setCurrentTemplatedId(String currentTemplatedId) {
         this.currentTemplatedId = currentTemplatedId;
@@ -43,11 +43,11 @@ public class AuthModel {
         return enableLog;
     }
 
-    public void setAuthUIModel(AuthUIModel authUIModel) {
-        this.authUIModel = authUIModel;
+    public void setAuthUIModel(AuthUIModel authUIConfig) {
+        this.authUIConfig = authUIConfig;
     }
 
     public AuthUIModel getAuthUIModel() {
-        return authUIModel;
+        return authUIConfig;
     }
 }
