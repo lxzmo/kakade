@@ -32,6 +32,8 @@ public class SwiftKakadePlugin: NSObject, FlutterPlugin{
     // 当前手机号
     var phoneNumber: String = ""
 
+    var viewController : FlutterViewController?
+
     // 注册插件
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "kakade", binaryMessenger: registrar.messenger())
@@ -46,6 +48,13 @@ public class SwiftKakadePlugin: NSObject, FlutterPlugin{
         instance.uiDelegate = AuthUIDelegate(instance: instance)
         // 验证网络是否可用
         // instance.httpAuthority()
+        guard let flutterViewController = UIApplication.shared.delegate?.window??.rootViewController as? FlutterViewController else {
+            return
+        }
+
+        // 设置全屏模式
+        flutterViewController.modalPresentationStyle = .fullScreen
+        instance.viewController = flutterViewController
         #endif
     }
 
@@ -153,12 +162,13 @@ public class SwiftKakadePlugin: NSObject, FlutterPlugin{
 
     // 开始拉起场景
     public func startScene(result: @escaping FlutterResult){
-        guard let viewController = WindowUtils.getCurrentViewController() else {
-            result(FlutterError(code: AlicomFusionTokenVerifyFail, message: "当前无法获取Flutter Activity,请重启再试", details: nil))
-            return
-        }
-        // handler?.startScene(withTemplateId: currentTemplatedId, viewController: viewController)
-        handler?.startSceneUI(withTemplateId: currentTemplatedId, viewController: viewController,delegate:uiDelegate!)
+        // guard let viewController = WindowUtils.getCurrentViewController() else {
+        //     result(FlutterError(code: AlicomFusionTokenVerifyFail, message: "当前无法获取Flutter Activity,请重启再试", details: nil))
+        //     return
+        // }
+        // handler?.startScene(withTemplateId: currentTemplatedId, viewController: self.viewController!)
+
+        handler?.startSceneUI(withTemplateId: currentTemplatedId, viewController:  self.viewController!,delegate:uiDelegate!)
     }
 
     // 继续场景

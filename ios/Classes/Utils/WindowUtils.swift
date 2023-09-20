@@ -2,7 +2,8 @@
 import Foundation
 
 class WindowUtils {
-    // 获取flutterviewcontroller
+    // MARK: - 获取flutterviewcontroller
+
     static func getFlutterViewController() -> FlutterViewController? {
         let viewController: UIViewController? = window?.rootViewController
         if (viewController?.isKind(of: FlutterViewController.self)) != nil {
@@ -14,8 +15,9 @@ class WindowUtils {
         }
     }
 
-    // 在view上添加UIViewController，查找当前的ViewController
-    static func getCurrentViewController(base: UIViewController? = UIApplication.shared.keyWindow?.rootViewController) -> UIViewController? {
+    // MARK: - 在view上添加UIViewController，查找当前的ViewController
+
+     static func getCurrentViewController(base: UIViewController? =  UIApplication.shared.delegate?.window??.rootViewController ) -> UIViewController? {
         if let nav = base as? UINavigationController {
             return getCurrentViewController(base: nav.visibleViewController)
         }
@@ -28,17 +30,22 @@ class WindowUtils {
         return base
     }
 
-    // 获取视窗
-    static var window: UIWindow? {
+    // MARK: - 获取视窗
+
+     static var window: UIWindow? {
         UIApplication.shared.keyWindow
     }
 
-    // 获取根视图
-    static var getRootViewController: UIViewController? {
+    // MARK: - 获取根视图
+
+     static var getRootViewController: UIViewController? {
+        // let window: UIWindow? = (UIApplication.shared.delegate?.window)!
+        
         return window?.rootViewController
     }
-
-    // 顶部安全区高度
+    
+    
+    //MARK: - 顶部安全区高度
     static func xp_safeDistanceTop() -> CGFloat {
         if #available(iOS 13.0, *) {
             let scene = UIApplication.shared.connectedScenes.first
@@ -51,8 +58,8 @@ class WindowUtils {
         }
         return 0;
     }
-
-    // 底部安全区高度
+    
+    //MARK: - 底部安全区高度
     static func xp_safeDistanceBottom() -> CGFloat {
         if #available(iOS 13.0, *) {
             let scene = UIApplication.shared.connectedScenes.first
@@ -65,8 +72,8 @@ class WindowUtils {
         }
         return 0;
     }
-
-    // 顶部状态栏高度（包括安全区）
+    
+    //MARK: - 顶部状态栏高度（包括安全区）
     static func xp_statusBarHeight() -> CGFloat {
         var statusBarHeight: CGFloat = 0
         if #available(iOS 13.0, *) {
@@ -79,24 +86,25 @@ class WindowUtils {
         }
         return statusBarHeight
     }
-
-    // 导航栏高度
+    
+    //MARK: - 导航栏高度
     static func xp_navigationBarHeight() -> CGFloat {
         return 44.0
     }
-
-    // 状态栏+导航栏的高度
+    
+    //MARK: - 状态栏+导航栏的高度
     static func xp_navigationFullHeight() -> CGFloat {
         return xp_statusBarHeight() + xp_navigationBarHeight()
     }
-
-    // 底部导航栏高度
+    
+    //MARK: - 底部导航栏高度
     static func xp_tabBarHeight() -> CGFloat {
         return 49.0
     }
-
-    // 底部导航栏高度（包括安全区）
+    
+    //MARK: - 底部导航栏高度（包括安全区）
     static func xp_tabBarFullHeight() -> CGFloat {
         return xp_tabBarHeight() + xp_safeDistanceBottom()
     }
+
 }

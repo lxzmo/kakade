@@ -35,7 +35,7 @@ class AuthUIBuilder {
 
     // 获取插件资源
     var PluginBundle: Bundle? {
-        if let path = Bundle(for: SwiftKakadePlugin.self).path(forResource: "AlicomFusionAuth", ofType: "bundle") {
+        if let path = Bundle(for: SwiftKakadePlugin.self).path(forResource: "ATAuthSDK", ofType: "bundle") {
             let bundle = Bundle(path: path)
             return bundle
         } 
